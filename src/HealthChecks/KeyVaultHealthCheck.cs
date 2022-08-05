@@ -20,7 +20,6 @@ public class KeyVaultHealthCheck : IHealthCheck
 
         }
 
-
         return HealthCheckResult.Healthy();
     }
 }
