@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Configuration;
+using CloudFit.Azure.HealthChecks.ResponseWriter;
 
 namespace CloudFit.Azure.HealthChecks;
 

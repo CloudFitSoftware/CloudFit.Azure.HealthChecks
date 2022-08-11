@@ -9,7 +9,7 @@ public class HealthCheckConfigColl
     public static HealthCheckConfigColl GetConfigCollection(IConfiguration configuration)
     {
         var cfgColl = new HealthCheckConfigColl();
-        var cfgSec = configuration.GetSection("HealthChecks");
+        var cfgSec = configuration.GetSection("HealthChecks") as IConfiguration;
 
         if(cfgSec != null) {
             cfgSec.Bind(cfgColl);
