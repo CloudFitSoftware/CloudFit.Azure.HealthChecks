@@ -1,0 +1,6 @@
+{
+    "HealthChecks": {
+        "Path": "/api/health",
+        "HealthCheckConfigs": []
+      }
+}
