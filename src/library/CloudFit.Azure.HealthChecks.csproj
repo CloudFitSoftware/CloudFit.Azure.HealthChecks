@@ -8,6 +8,7 @@
 
   <PropertyGroup>
     <PackageId>CloudFit.Azure.HealthChecks</PackageId>
+    <PackageVersion>0.0.0</PackageVersion>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/CloudFitSoftware/CloudFit.Azure.HealthChecks</RepositoryUrl>
   </PropertyGroup>
