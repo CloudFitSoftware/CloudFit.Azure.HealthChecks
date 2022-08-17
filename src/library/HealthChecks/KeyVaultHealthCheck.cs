@@ -1,25 +1,36 @@
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
 
 namespace CloudFit.Azure.HealthChecks;
 
-public class KeyVaultHealthCheck : IHealthCheck
+public class KeyVaultHealthCheck : IHealthCheck, IConfigureHealthCheck
 {
+    private readonly IEnumerable<string> PropNames = (new[] { "KeyVaultName" });
+
+    private string KeyVaultName { get; set; }
+
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
-        var result = "";
-        HealthCheckResult hcResult = HealthCheckResult.Healthy();
+        var kvUri = $"https://{this.KeyVaultName}.vault.azure.net";
+        var keyVaultClient = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
 
-        if (result == "degraded")
-        {
-            return HealthCheckResult.Degraded();
-        }
-
-        if (result == "unhealth")
-        {
-            return HealthCheckResult.Unhealthy();
-
+        if(keyVaultClient == null) {
+            //return HealthCheckResult.Unhealthy();
+            throw new Exception("Key Vault Not Found!!!!!!!!!!");
         }
 
         return HealthCheckResult.Healthy();
+    }
+
+    public void SetHealthCheckProperties(IDictionary<string, string> props)
+    {
+        foreach (var name in this.PropNames)
+        {
+            if (props.ContainsKey(name))
+            {
+                this.KeyVaultName = props[name];
+            }
+        }
     }
 }
