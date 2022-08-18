@@ -12,12 +12,19 @@ public class KeyVaultHealthCheck : IHealthCheck, IConfigureHealthCheck
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
-        var kvUri = $"https://{this.KeyVaultName}.vault.azure.net";
-        var keyVaultClient = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+        try
+        {
+            var kvUri = $"https://{this.KeyVaultName}.vault.azure.net";
+            var keyVaultClient = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
 
-        if(keyVaultClient == null) {
-            //return HealthCheckResult.Unhealthy();
-            throw new Exception("Key Vault Not Found!!!!!!!!!!");
+            if (keyVaultClient == null)
+            {
+                return HealthCheckResult.Unhealthy($"Key Vault client not created.  (KeyVaultName: {this.KeyVaultName})");
+            }
+        }
+        catch (Exception e)
+        {
+            return HealthCheckResult.Unhealthy($"Error in creataing Key Vault client.  (KeyVaultName: {this.KeyVaultName})", e);
         }
 
         return HealthCheckResult.Healthy();
