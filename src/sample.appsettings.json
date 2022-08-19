@@ -1,6 +1,14 @@
 {
-    "HealthChecks": {
+    "HealthCheckSettings": {
         "Path": "/api/health",
-        "HealthCheckConfigs": []
+        "HealthCheckConfigs": [
+          {
+            "Name": "KeyVault Health Check",
+            "Type": "KeyVaultConfig",
+            "Props": {
+              "KeyVaultName": "OneTwoThree"
+            }
+          }
+        ]
       }
 }
