@@ -21,6 +21,8 @@ public class KeyVaultHealthCheck : IHealthCheck, IConfigureHealthCheck
             {
                 return HealthCheckResult.Unhealthy($"Key Vault client not created.  (KeyVaultName: {this.KeyVaultName})");
             }
+
+            keyVaultClient.GetPropertiesOfSecrets();
         }
         catch (Exception e)
         {
