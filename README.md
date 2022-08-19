@@ -19,7 +19,7 @@ Other things to include:
 
 In the vscode terminal:
 
-    ``dotnet add package CloudFit.Azure.HealthChecks ``
+    dotnet add package CloudFit.Azure.HealthChecks
 
 ---
 
