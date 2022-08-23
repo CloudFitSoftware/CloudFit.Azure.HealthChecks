@@ -1,4 +1,4 @@
-name:  package
+name:  preview-package
 
 env:
   DOTNET_VERSION: '6.0.x'
@@ -32,7 +32,7 @@ jobs:
 
     # 3) Pull the latest tag
     - name: Set VERSION variable from tag
-      run: echo "VERSION=${{  github.ref_name }}" >> $GITHUB_ENV
+      run: echo "RELEASE_VERSION=${{  github.ref_name }}" >> $GITHUB_ENV
 
     # 4) Restore the dependencies and tools of a project or solution.
     - name: Install dependencies
@@ -52,11 +52,11 @@ jobs:
     # 7) Nuget packaging
     - name: Pack
       working-directory: ./src
-      run: dotnet pack --configuration Release /p:Version=${{ env.VERSION }} --no-build --output .
+      run: dotnet pack --configuration Release /p:Version=${RELEASE_VERSION} --no-build --output .
 
     # 8) Upload package back to github
     - name: Push
       working-directory: ./src
-      run: dotnet nuget push CloudFit.Azure.HealthChecks.${{ env.VERSION }}.nupkg
+      run: dotnet nuget push CloudFit.Azure.HealthChecks.${RELEASE_VERSION}.nupkg
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
