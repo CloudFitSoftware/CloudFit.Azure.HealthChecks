@@ -52,11 +52,11 @@ jobs:
     # 7) Nuget packaging
     - name: Pack
       working-directory: ./src
-      run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output .
+      run: dotnet pack --configuration Release /p:Version=${{ env.VERSION }} --no-build --output .
 
     # 8) Upload package back to github
     - name: Push
       working-directory: ./src
-      run: dotnet nuget push CloudFit.Azure.HealthChecks.${VERSION}.nupkg
+      run: dotnet nuget push CloudFit.Azure.HealthChecks.${{ env.VERSION }}.nupkg
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
