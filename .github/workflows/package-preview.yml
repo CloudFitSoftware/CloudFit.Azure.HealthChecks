@@ -22,7 +22,7 @@ jobs:
     # 2) Set up the .NET CLI environment for the workflow to use.
     #    The .NET version is specified by the environment variable.
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -53,6 +53,6 @@ jobs:
     # 8) Upload package back to github
     - name: Push
       working-directory: ./src
-      run: dotnet nuget push NuGet.Workflow.${VERSION}.nupkg --source https://nuget.pkg.github.com/CloudFitSoftware/CloudFit.Azure.HealthChecks/index.json --api-key ${GITHUB_TOKEN}
+      run: dotnet nuget push CloudFit.Azure.HealthChecks.${VERSION}.nupkg --source https://nuget.pkg.github.com/CloudFitSoftware/CloudFit.Azure.HealthChecks/index.json --api-key ${GITHUB_TOKEN}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
