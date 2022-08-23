@@ -37,8 +37,9 @@ jobs:
 
     - name: check captured version vale
       run: 
-        echo RELEASE_VERSION
-        echo ${{ env.RELEASE_VERSION }}
+        echo "${RELEASE_VERSION}"
+        echo "${{ env.RELEASE_VERSION }}"
+        echo "${${{ github.ref_name }}:1}"
 
     # 4) Restore the dependencies and tools of a project or solution.
     - name: Install dependencies
