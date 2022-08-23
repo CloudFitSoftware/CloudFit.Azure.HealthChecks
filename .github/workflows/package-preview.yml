@@ -32,7 +32,7 @@ jobs:
 
     # 3) Pull the latest tag
     - name: Set VERSION variable from tag
-      run: echo "VERSION=${GITHUB_REF#refs\/tags\/v/}" >> $GITHUB_ENV
+      run: echo "VERSION=${{  github.ref_name }}" >> $GITHUB_ENV
 
     # 4) Restore the dependencies and tools of a project or solution.
     - name: Install dependencies
