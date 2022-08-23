@@ -27,6 +27,8 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
         # Authenticates packages to push to GPR
         source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
     # 3) Pull the latest tag
     - name: Set VERSION variable from tag
