@@ -44,7 +44,7 @@ jobs:
     - name: check captured version vale
       run: |
         echo "${{ env.RELEASE_VERSION }}"
-        echo "$("${{ env.RELEASE_VERSION }}" | grep -o '[^v-].[0-9]\.[0-9]')"
+        echo "$("${{ env.RELEASE_VERSION }}" | grep -o '[^v-]+(?=-)')"
         echo "$("${{ env.RELEASE_VERSION }}" | grep -o 'prev.*')"
         
     # 4) Restore the dependencies and tools of a project or solution.
