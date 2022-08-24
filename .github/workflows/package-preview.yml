@@ -45,7 +45,7 @@ jobs:
       run: |
         echo "${{ env.RELEASE_VERSION }}"
         echo "$("${{ env.RELEASE_VERSION }}" | grep -o -E '.*(?=-)')"
-        echo "$("${{ env.RELEASE_VERSION }}" | sed  's/\((?=-).*\) /\1/p')"
+        echo "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1"
         echo "$("${{ env.RELEASE_VERSION }}" | grep -o 'prev.*')"
         
     # 4) Restore the dependencies and tools of a project or solution.
