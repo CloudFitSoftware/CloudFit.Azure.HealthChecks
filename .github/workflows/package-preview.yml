@@ -5,7 +5,7 @@ on:
   push:
     # based on when a tag is applied.
     tags:
-    - "v[0-9]+.[0-9]+.[0-9]+-preview[0-9][0-9][0-9]"
+    - "[0-9]+.[0-9]+.[0-9]+-preview[0-9][0-9][0-9]"
 
 env:
   DOTNET_VERSION: '6.0.x'
@@ -44,7 +44,7 @@ jobs:
     - name: check captured version value
       run: |
         echo "${{ env.RELEASE_VERSION }}"
-        echo "$("${{ env.RELEASE_VERSION }}" | grep -o '[^v]+.*(?=-)')"
+        echo "$("${{ env.RELEASE_VERSION }}" | grep -o '.*(?=-)')"
         echo "$("${{ env.RELEASE_VERSION }}" | grep -o '[0-9]+\.+[0-9]+\.+[0-9]')"
         echo "$("${{ env.RELEASE_VERSION }}" | grep -o 'prev.*')"
         
