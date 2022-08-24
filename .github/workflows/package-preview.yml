@@ -35,42 +35,29 @@ jobs:
       env:
         NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-    ## 3) Pull the latest tag
-    #- name: Set VERSION variable from tag
-    #  run: 
-    #    echo "::set-output name=version_suffix::$("${{ env.RELEASE_VERSION }}" | grep -o 'preview.*' )"
-    #  id: suffix
-
-    - name: check captured version value
-      run: |
-        echo "${{ env.RELEASE_VERSION }}"
-        echo "$("${{ env.RELEASE_VERSION }}" | grep -o -E '.*(?=-)')"
-        echo "$("${{ env.RELEASE_VERSION }}" | grep -o 'prev.*')"
-        echo "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 2)"
-        
-    # 4) Restore the dependencies and tools of a project or solution.
+    # 3) Restore the dependencies and tools of a project or solution.
     - name: Install dependencies
       working-directory: ./src
       run: dotnet restore
 
-    # 5) Build a project or solution and all of its dependencies.
+    # 4) Build a project or solution and all of its dependencies.
     - name: Build
       working-directory: ./src
       run: dotnet build --configuration Release --no-restore
 
-    # 6) Test a project or solution.
+    # 5) Test a project or solution.
     - name: Test
       working-directory: ./src
       run: dotnet test --no-restore --verbosity normal
 
-    # 7) Nuget packaging
+    # 6) Nuget packaging
     - name: Pack
       working-directory: ./src
       run: dotnet pack --configuration Release -p:PackageVersion="$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1)" --version-suffix "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 2)" --no-build --output .
 
-    # 8) Upload package back to github
+    # 7) Upload package back to github
     - name: Push
       working-directory: ./src
-      run: dotnet nuget push CloudFit.Azure.HealthChecks.${RELEASE_VERSION}.nupkg
+      run: dotnet nuget push "CloudFit.Azure.HealthChecks.$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1).nupkg"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
