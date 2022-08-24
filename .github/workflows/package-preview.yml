@@ -36,7 +36,7 @@ jobs:
     # 3) Pull the latest tag
     - name: Set VERSION variable from tag
       run: 
-        echo "::set-output name=version_suffix::$(${{ env.RELEASE_VERSION }} | grep -o '.-*' )"
+        echo "::set-output name=version_suffix::$("${{ env.RELEASE_VERSION }}" | grep -o '.-*' )"
       id: suffix
 
     - name: check captured version vale
