@@ -60,7 +60,7 @@ jobs:
     # 7) Nuget packaging
     - name: Pack
       working-directory: ./src
-      run: dotnet pack --configuration Release /p:Version=${{ github.ref_name }} --no-build --output .
+      run: dotnet pack --configuration Release -p:Version=${{ github.ref_name }} --no-build --output .
 
     # 8) Upload package back to github
     - name: Push
