@@ -36,12 +36,14 @@ jobs:
     # 3) Pull the latest tag
     - name: Set VERSION variable from tag
       run: 
-        echo "::set-output name=version_suffix::`echo "" | grep -o '-*' `"
+        echo "::set-output name=version_suffix::$(${{ env.RELEASE_VERSION }} | grep -o '.-*' )"
+      id: suffix
 
     - name: check captured version vale
       run: |
         echo "${{ env.RELEASE_VERSION }}"
         echo "${{ env.version_suffix }}"
+        echo "${{ steps.suffix.output.version_suffix }}"
         
     # 4) Restore the dependencies and tools of a project or solution.
     - name: Install dependencies
