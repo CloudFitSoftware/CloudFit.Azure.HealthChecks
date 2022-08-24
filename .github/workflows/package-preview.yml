@@ -9,7 +9,7 @@ on:
 
 env:
   DOTNET_VERSION: '6.0.x'
-  RELEASE_VERSION: "$("${{ github.ref_name }}" | grep -o '[^v-].[0-9]\.[0-9]'')"
+  RELEASE_VERSION: "$("${{ github.ref_name }}" | grep -o '[^v-].[0-9]\.[0-9]')"
   RELEASE_SUFFIX: "$("${{ github.ref_name }}" | grep -o 'prev.*')"
 
 jobs:
