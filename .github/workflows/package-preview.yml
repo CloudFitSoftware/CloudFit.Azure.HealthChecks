@@ -45,8 +45,8 @@ jobs:
       run: |
         echo "${{ env.RELEASE_VERSION }}"
         echo "$("${{ env.RELEASE_VERSION }}" | grep -o -E '.*(?=-)')"
-        echo "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1)"
         echo "$("${{ env.RELEASE_VERSION }}" | grep -o 'prev.*')"
+        echo "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 2)"
         
     # 4) Restore the dependencies and tools of a project or solution.
     - name: Install dependencies
@@ -66,7 +66,7 @@ jobs:
     # 7) Nuget packaging
     - name: Pack
       working-directory: ./src
-      run: dotnet pack --configuration Release -p:PackageVersion="$("${{ env.RELEASE_VERSION }}" | grep -o '[^v]+.*(?=-)')" --version-suffix "$("${{ env.RELEASE_VERSION }}" | grep -o 'prev.*')" --no-build --output .
+      run: dotnet pack --configuration Release -p:PackageVersion="$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1)" --version-suffix "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 2)" --no-build --output .
 
     # 8) Upload package back to github
     - name: Push
