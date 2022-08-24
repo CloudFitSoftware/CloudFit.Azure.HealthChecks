@@ -44,7 +44,7 @@ jobs:
     - name: check captured version value
       run: |
         echo "${{ env.RELEASE_VERSION }}"
-        echo "$("${{ env.RELEASE_VERSION }}" | grep -o '.*(?=-)')"
+        echo "$("${{ env.RELEASE_VERSION }}" | grep -o -E '.*(?=-)')"
         echo "$("${{ env.RELEASE_VERSION }}" | sed  's/\((?=-).*\) /\1/p')"
         echo "$("${{ env.RELEASE_VERSION }}" | grep -o 'prev.*')"
         
