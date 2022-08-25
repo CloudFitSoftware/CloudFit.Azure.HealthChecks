@@ -5,13 +5,11 @@ on:
   push:
     # based on when a tag is applied.
     tags:
-    - "[0-9]+.[0-9]+.[0-9]+-preview[0-9][0-9][0-9]"
+    - "[0-9]+.[0-9]+.[0-9]+-preview[0-9]+"
 
 env:
   DOTNET_VERSION: '6.0.x'
   RELEASE_VERSION: "${{ github.ref_name }}"
-  #RELEASE_VERSION: "$("${{ github.ref_name }}" | grep -o '[^v-].[0-9]\.[0-9]')"
-  #RELEASE_SUFFIX: "$("${{ github.ref_name }}" | grep -o 'prev.*')"
 
 jobs:
   build:
@@ -43,7 +41,7 @@ jobs:
     # 4) Build a project or solution and all of its dependencies.
     - name: Build
       working-directory: ./src
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore -p:VersionPrefix="$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1)" --version-suffix "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 2)"
 
     # 5) Test a project or solution.
     - name: Test
@@ -53,11 +51,11 @@ jobs:
     # 6) Nuget packaging
     - name: Pack
       working-directory: ./src
-      run: dotnet pack --configuration Release -p:PackageVersion="$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1)" --version-suffix "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 2)" --no-build --output .
+      run: dotnet pack --configuration Release -p:VersionPrefix="$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1)" --version-suffix "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 2)" --no-build --output .
 
     # 7) Upload package back to github
     - name: Push
       working-directory: ./src
-      run: dotnet nuget push "CloudFit.Azure.HealthChecks.$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1).nupkg"
+      run: dotnet nuget push "CloudFit.Azure.HealthChecks.$("${{ env.RELEASE_VERSION }}").nupkg"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

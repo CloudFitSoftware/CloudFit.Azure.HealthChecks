@@ -2,12 +2,14 @@ name:  package
 
 env:
   DOTNET_VERSION: '6.0.x'
+  RELEASE_VERSION: "${{ github.ref_name }}"
 
 on:
   push:
     # based on when a tag is applied.
     tags:
-    - "v[0-9]+.[0-9]+.[0-9]+"
+    - "[0-9]+.[0-9]+.[0-9]+"
+
 jobs:
   build:
     runs-on: windows-latest
@@ -28,37 +30,32 @@ jobs:
     # 3) Set up the .NET CLI environment for the workflow to use.
     #    The .NET version is specified by the environment variable.
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
+        # Authenticates packages to push to GPR
+        source-url: https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-    # 4) Pull the latest tag
-    - name: Set VERSION variable from tag
-      run: echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
-
-    # 5) Restore the dependencies and tools of a project or solution.
+    # 4) Restore the dependencies and tools of a project or solution.
     - name: Install dependencies
       working-directory: ./src
       run: dotnet restore
 
-    # 6) Build a project or solution and all of its dependencies.
+    # 5) Build a project or solution and all of its dependencies.
     - name: Build
       working-directory: ./src
-      run: dotnet build --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore -p:VersionPrefix="$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1)" --version-suffix "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 2)"
 
-    # 7) Test a project or solution.
-    - name: Test
-      working-directory: ./src
-      run: dotnet test --no-restore --verbosity normal
-
-    # 8) Nuget packaging
+    # 6) Nuget packaging
     - name: Pack
       working-directory: ./src
-      run: dotnet pack --configuration Release /p:Version=${VERSION} --no-build --output .
+      run: dotnet pack --configuration Release -p:VersionPrefix="$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1)" --version-suffix "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 2)" --no-build --output .
 
-    # 9) Upload package back to github
+    # 7) Upload package back to github
     - name: Push
       working-directory: ./src
-      run: dotnet nuget push CloudFit.Azure.HealthChecks.${VERSION}.nupkg --source https://nuget.pkg.github.com/CloudFitSoftware/CloudFit.Azure.HealthChecks/index.json --api-key ${GITHUB_TOKEN}
+      run: dotnet nuget push "CloudFit.Azure.HealthChecks.$("${{ env.RELEASE_VERSION }}").nupkg"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
