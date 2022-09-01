@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using CloudFit.Azure.HealthChecks.ResponseWriter;
 using CloudFit.Azure.HealthChecks.Configuration;
@@ -22,13 +22,39 @@ public static class DI
         // create builder
         var healthCheckBuilder = services.AddHealthChecks();
 
-        foreach(var config in healthCheckSettings.HealthCheckConfigs) {
+        foreach (var config in healthCheckSettings.HealthCheckConfigs)
+        {
             healthCheckBuilder.AddHealthCheck(config);
         }
 
     }
 
-    
+    public static void InjectHealthChecks(this IServiceCollection services, IConfiguration configuration, Type[] dbContextTypes)
+    {
+        // create builder
+        var healthCheckBuilder = services.AddHealthChecks();
+
+        // parse configuration
+        var healthCheckSettings = HealthCheckSettings.GetSettings(configuration);
+
+        if (healthCheckSettings != null && healthCheckSettings.HealthCheckConfigs != null)
+        {
+            foreach (var config in healthCheckSettings.HealthCheckConfigs)
+            {
+                healthCheckBuilder.AddHealthCheck(config);
+            }
+        }
+
+        if (dbContextTypes != null)
+        {
+            foreach (var dbContextType in dbContextTypes)
+            {
+                //healthCheckBuilder.AddDbContextCheck();
+                healthCheckBuilder.GetType().GetMethod("AddDbContextCheck").MakeGenericMethod(dbContextType).Invoke(null, null);
+            }
+        }
+    }
+
 
     public static void ConfigureHealthChecks(this IApplicationBuilder app)
     {
@@ -41,7 +67,8 @@ public static class DI
         var healthCheckSettings = HealthCheckSettings.GetSettings(configuration);
 
         var path = _defaultPath;
-        if(!string.IsNullOrEmpty(healthCheckSettings.Path)) {
+        if (!string.IsNullOrEmpty(healthCheckSettings.Path))
+        {
             path = healthCheckSettings.Path;
         }
 
