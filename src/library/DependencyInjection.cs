@@ -50,7 +50,8 @@ public static class DI
             foreach (var dbContextType in dbContextTypes)
             {
                 //healthCheckBuilder.AddDbContextCheck();
-                healthCheckBuilder.GetType().GetMethod("AddDbContextCheck").MakeGenericMethod(dbContextType).Invoke(null, null);
+                typeof(EntityFrameworkCoreHealthChecksBuilderExtensions).GetMethod("AddDbContextCheck").MakeGenericMethod(dbContextType).Invoke(healthCheckBuilder, null);
+                //healthCheckBuilder.GetType().GetMethod("",1, null);
             }
         }
     }

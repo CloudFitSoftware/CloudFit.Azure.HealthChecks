@@ -36,9 +36,11 @@ public class KeyVaultHealthCheck : IHealthCheck, IConfigureHealthCheck
     {
         foreach (var name in this.PropNames)
         {
-            if (props.ContainsKey(name))
-            {
-                this.GetType().GetField(name).SetValue(this, props[name]);
+            switch(name){
+                case "KeyVaultName": {
+                    this.KeyVaultName = (props[name] as string);
+                    break;
+                }
             }
         }
     }
