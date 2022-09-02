@@ -10,7 +10,7 @@ public class KeyVaultHealthCheck : IHealthCheck, IConfigureHealthCheck
 
     private string? KeyVaultName { get; set; }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -19,17 +19,17 @@ public class KeyVaultHealthCheck : IHealthCheck, IConfigureHealthCheck
 
             if (keyVaultClient == null)
             {
-                return HealthCheckResult.Unhealthy($"Key Vault client not created.  (KeyVaultName: {this.KeyVaultName})");
+                return Task.FromResult(HealthCheckResult.Unhealthy($"Key Vault client not created.  (KeyVaultName: {this.KeyVaultName})"));
             }
 
             keyVaultClient.GetPropertiesOfSecrets();
         }
         catch (Exception e)
         {
-            return HealthCheckResult.Unhealthy($"Error in creataing Key Vault client.  (KeyVaultName: {this.KeyVaultName})", e);
+            return Task.FromResult(HealthCheckResult.Unhealthy($"Error in creataing Key Vault client.  (KeyVaultName: {this.KeyVaultName})", e));
         }
 
-        return HealthCheckResult.Healthy();
+        return Task.FromResult(HealthCheckResult.Healthy());
     }
 
     public void SetHealthCheckProperties(IDictionary<string, object> props)

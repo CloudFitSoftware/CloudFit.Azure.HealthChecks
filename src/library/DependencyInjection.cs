@@ -13,23 +13,17 @@ public static class DI
 {
     private static string _defaultPath = "/api/health";
 
+    /*
+    * InjectHealthChecks
+    */
     // Static function for injecting health checks into the application service collection
     public static void InjectHealthChecks(this IServiceCollection services, IConfiguration configuration)
     {
-        // parse configuration
-        var healthCheckSettings = HealthCheckSettings.GetSettings(configuration);
-
-        // create builder
-        var healthCheckBuilder = services.AddHealthChecks();
-
-        foreach (var config in healthCheckSettings.HealthCheckConfigs)
-        {
-            healthCheckBuilder.AddHealthCheck(config);
-        }
-
+        services.InjectHealthChecks(configuration, null);
     }
 
-    public static void InjectHealthChecks(this IServiceCollection services, IConfiguration configuration, Type[] dbContextTypes)
+    // Static function for injecting health checks into the application service collection
+    public static void InjectHealthChecks(this IServiceCollection services, IConfiguration configuration, Type[]? dbContextTypes)
     {
         // create builder
         var healthCheckBuilder = services.AddHealthChecks();
@@ -37,26 +31,38 @@ public static class DI
         // parse configuration
         var healthCheckSettings = HealthCheckSettings.GetSettings(configuration);
 
+        // If individual health checks defined
         if (healthCheckSettings != null && healthCheckSettings.HealthCheckConfigs != null)
         {
+            // add each health check
             foreach (var config in healthCheckSettings.HealthCheckConfigs)
             {
                 healthCheckBuilder.AddHealthCheck(config);
             }
         }
 
+        // if dbContext types (primarily for Entity Framework)
         if (dbContextTypes != null)
         {
+            // Define arguments for reflection of generic method
+            var methodInputArgs = new[] { healthCheckBuilder, System.Type.Missing, System.Type.Missing, System.Type.Missing, System.Type.Missing };
+
             foreach (var dbContextType in dbContextTypes)
             {
-                //healthCheckBuilder.AddDbContextCheck();
-                typeof(EntityFrameworkCoreHealthChecksBuilderExtensions).GetMethod("AddDbContextCheck").MakeGenericMethod(dbContextType).Invoke(healthCheckBuilder, null);
-                //healthCheckBuilder.GetType().GetMethod("",1, null);
+                // Get generic method for adding ootb dbContext health check
+                var methodInfo = typeof(EntityFrameworkCoreHealthChecksBuilderExtensions).GetMethod("AddDbContextCheck");
+                if(methodInfo != null)
+                {
+                    // add health check for dbContext
+                    methodInfo.MakeGenericMethod(dbContextType).Invoke(null, methodInputArgs);
+                }
             }
         }
     }
 
-
+    /*
+    * ConfigureHealthChecks
+    */
     public static void ConfigureHealthChecks(this IApplicationBuilder app)
     {
         app.ConfigureHealthChecks(HealthCheckResponseWriter.ResponseWriter, _defaultPath);
