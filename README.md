@@ -45,3 +45,5 @@ General instructions on _how_ to contribute should be stated with a link to [CON
 
 1. Configure your Azure Alerts with [cfs-integration-hub](https://github.com/CloudFitSoftware/cfs-integration-hub)
 2. Learn how [CloudFit Software](https://www.cloudfitsoftware.com/) can help your organization.
+
+3. Microsoft Health Check [ref](https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks?view=aspnetcore-6.0)

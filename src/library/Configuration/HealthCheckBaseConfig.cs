@@ -8,5 +8,5 @@ public class HealthCheckConfig
 
     public string? Type { get; set; }
 
-    public Dictionary<string, string>? Props { get; set; }
+    public Dictionary<string, object>? Props { get; set; }
 }
