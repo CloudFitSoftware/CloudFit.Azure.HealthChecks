@@ -1,14 +1,27 @@
 {
-    "HealthCheckSettings": {
-        "Path": "/api/health",
-        "HealthCheckConfigs": [
-          {
-            "Name": "KeyVault Health Check",
-            "Type": "KeyVaultConfig",
-            "Props": {
-              "KeyVaultName": "OneTwoThree"
-            }
-          }
+  "HealthCheckSettings": {
+    "Path": "/api/health",
+    "HealthCheckConfigs": [
+      {
+        "Name": "KeyVault Health Check",
+        "Type": "KeyVaultHealthCheck",
+        "Props": {
+          "KeyVaultName": "OneTwoThree"
+        }
+      },
+      {
+        "Name": "Graph API Health Check",
+        "Type": "GraphApiHealthCheck",
+        "Props": {
+          "GraphScope": "Email.Send"
+        },
+        "KeyRefs": [
+          "Email:ClientId",
+          "Email:TenantId",
+          "Email:ClientSecret"
         ]
       }
+    ]
+  }
 }
+
