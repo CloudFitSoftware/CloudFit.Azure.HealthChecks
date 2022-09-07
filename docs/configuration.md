@@ -41,21 +41,48 @@ This is the required root configuration.
             "Props": {
               "ExampleProp1": "ExamplePropValue",
               "ExampleProp2": "ExamplePropValue"
-            }
+            },
+            "KeyRefs": [
+              "Existing:Config:Key",
+              "Existing:Config:Key"
+            ]
           }
         ]
     }
 }
 ```
+**Props:** Set the value of a property for that health check.  Name directly matches the property name on the health check class.  
+**KeyRefs:** An array of strings to reference another configuration key.  These values will be parsed based on the ':', and the last part will be used to match against the property name on the health check class.  
+
 For each health check desired, use the below to add to the HealthCheckConfigs collection.
 
 ### KeyVaultCheck
 ```json
 {
-    "Name": "KeyVault Health Check",
-    "Type": "KeyVaultConfig",
-    "Props": {
-        "KeyVaultName": "name-of-key-vault"
-    }
+  "Name": "KeyVault Health Check",
+  "Type": "KeyVaultHealthCheck",
+  "Props": {
+      "KeyVaultName": "name-of-key-vault"
+  }
 }
 ```
+**KeyVaultCheck** checks the ability for the app to reach the specified key vault.
+
+### GraphAPIHealthCheck
+```json
+,
+{
+  "Name": "Graph API Health Check",
+  "Type": "GraphApiHealthCheck",
+  "Props": {
+    "GraphScope": "Email.Send",
+    "TenantId": "guid"
+  },
+  "KeyRefs": [
+    "Email:ClientId",
+    "Email:ClientSecret"
+  ]
+}
+```
+**GraphAPIHealthCheck** checks the ability for the app to get an auth token against graph.microsoft.com for the defined scope.  
+_GraphScope_:  Default value is:  ".default"

@@ -55,9 +55,9 @@ public class GraphApiHealthCheck : IHealthCheck, IConfigureHealthCheck
                     var content = new FormUrlEncodedContent(dataDict);
 
                     var response_message = await client.PostAsync($"https://login.microsoftonline.com/{this.TenantId}/oauth2/v2.0/token", content);
+                    var response_content = await response_message.Content.ReadAsStringAsync();
                     if (response_message.IsSuccessStatusCode)
                     {
-                        var response_content = await response_message.Content.ReadAsStringAsync();
                         var response = JsonSerializer.Deserialize<System.Text.Json.Nodes.JsonNode>(response_content);
                         if (response != null)
                         {
@@ -65,6 +65,10 @@ public class GraphApiHealthCheck : IHealthCheck, IConfigureHealthCheck
                             this.Token = response["access_token"].GetValue<string>();
                             this.TokenExpiration = DateTime.Now.AddSeconds((response["expires_in"].GetValue<int>()));
                         }
+                    }
+                    else
+                    {
+                        return HealthCheckResult.Unhealthy($"Failed to get token for graph api ({response_content}).\n tenant: {this.TenantId}\n client: {this.ClientId}\n scope: {this.GraphScope}");
                     }
                 }
             }
