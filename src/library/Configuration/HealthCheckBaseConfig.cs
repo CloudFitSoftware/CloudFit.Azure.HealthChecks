@@ -9,4 +9,6 @@ public class HealthCheckConfig
     public string? Type { get; set; }
 
     public Dictionary<string, object>? Props { get; set; }
+
+    public List<string>? KeyRefs { get; set; }
 }

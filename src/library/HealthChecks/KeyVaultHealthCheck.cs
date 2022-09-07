@@ -29,17 +29,22 @@ public class KeyVaultHealthCheck : IHealthCheck, IConfigureHealthCheck
             return Task.FromResult(HealthCheckResult.Unhealthy($"Error in creataing Key Vault client.  (KeyVaultName: {this.KeyVaultName})", e));
         }
 
-        return Task.FromResult(HealthCheckResult.Healthy());
+        return Task.FromResult(HealthCheckResult.Healthy("Successfully connected to key vault."));
     }
 
-    public void SetHealthCheckProperties(IDictionary<string, object> props)
+    public void SetHealthCheckProperties(IDictionary<string, object>? props)
     {
-        foreach (var name in this.PropNames)
+        if (props != null)
         {
-            switch(name){
-                case "KeyVaultName": {
-                    this.KeyVaultName = (props[name] as string);
-                    break;
+            foreach (var name in this.PropNames)
+            {
+                switch (name)
+                {
+                    case "KeyVaultName":
+                        {
+                            this.KeyVaultName = (props[name] as string);
+                            break;
+                        }
                 }
             }
         }
