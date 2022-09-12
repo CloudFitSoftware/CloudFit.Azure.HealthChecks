@@ -7,6 +7,7 @@ public class HealthCheckSettings
     public static HealthCheckSettings GetSettings(IConfiguration configuration)
     {
         var hcSet = new HealthCheckSettings();
+
         var cfgSec = configuration.GetSection("HealthCheckSettings") as IConfiguration;
 
         if (cfgSec != null)
@@ -32,6 +33,8 @@ public class HealthCheckSettings
     }
 
     public string Path { get; set; }
+
+    public IEnumerable<string>? IncludeDbContext { get; set; }
 
     public IEnumerable<HealthCheckConfig> HealthCheckConfigs { get; set; }
 }
