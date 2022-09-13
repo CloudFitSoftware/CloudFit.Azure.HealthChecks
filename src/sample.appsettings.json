@@ -1,6 +1,7 @@
 {
   "HealthCheckSettings": {
     "Path": "/api/health",
+    "IncludeDbContext": [],
     "HealthCheckConfigs": [
       {
         "Name": "KeyVault Health Check",

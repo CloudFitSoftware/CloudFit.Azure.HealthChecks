@@ -8,9 +8,8 @@ Use the InjectHealthChecks extension method for the services object.
 ```c#
 public void ConfigureServices(IServiceCollection services)
 {
-  IConfiguration configuration = ...
   :
-  services.InjectHealthChecks(configuration);
+  services.InjectHealthChecks();
 }
 ```
 
@@ -28,12 +27,16 @@ public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 ## appSettings.json
 Health checks configuration is driven out of the appSettings json file.
 
-### HealthCheckSettings
+### **HealthCheckSettings**
 This is the required root configuration.  
 ```json
 {
     "HealthCheckSettings": {
         "Path": "/api/health",
+        "IncludeDbContext": [
+          "MyCustomDBContextClassName1",
+          "MyCustomDBContextClassName2"
+        ],
         "HealthCheckConfigs": [
           {
             "Name": "Example Health Check",
@@ -51,10 +54,19 @@ This is the required root configuration.
     }
 }
 ```
-**Props:** Set the value of a property for that health check.  Name directly matches the property name on the health check class.  
-**KeyRefs:** An array of strings to reference another configuration key.  These values will be parsed based on the ':', and the last part will be used to match against the property name on the health check class.  
+**Path:** This is the relative url to direct health data.  Default show in example above.  
+**IncludeDbContext:** This is a collection of strings to identify the _Microsoft.EntityFrameworkCore.DbContext_ to wrap in health checks.  
+  * Leaving this as an empty array includes all DbContexts add to the _IServiceCollection_.
+  * Removing this from configuration will exclude all DbContexts from health checks via this process.
 
+### **HealthCheckConfigs**
 For each health check desired, use the below to add to the HealthCheckConfigs collection.
+
+HealthCheckConfig is unique by name.  When multiple of the same check defined in configuration, remember to give them different names.  
+
+_[TIP]_:  For a better understanding of setting an individual health check properties:  
+**Props:** Set the value of a property for that health check.  Name directly matches the property name on the health check class.  
+**KeyRefs:** An array of strings to reference another configuration key.  These values will be parsed based on the ':', and the last part will be used to match against the property name on the health check class.
 
 ### KeyVaultCheck
 ```json
