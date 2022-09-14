@@ -10,6 +10,11 @@ namespace CloudFit.Azure.HealthChecks;
 
 public class GraphApiHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigureHealthCheck
 {
+    private static string _clientIdKey = "";
+    private static string _clientSecretKey = "";
+    private static string _tenantIdKey = "";
+    private static string _graphScopeKey = "";
+    
     private readonly IEnumerable<string> PropNames = (new[] { "RestBaseUri", "ClientId", "ClientSecret", "TenantId", "GraphScope" });
 
     // values supplied from configuration
