@@ -62,45 +62,21 @@ This is the required root configuration.
 ### **HealthCheckConfigs**
 For each health check desired, use the below to add to the HealthCheckConfigs collection.
 
-HealthCheckConfig is unique by name.  When multiple of the same check defined in configuration, remember to give them different names.  
+> [_WARNING_]:  HealthCheckConfig is unique by name.  When multiple of the same check defined in configuration, remember to give them different names.  
 
-_[TIP]_:  For a better understanding of setting an individual health check properties:  
-> **Props:** Set the value of a property for that health check.  Name directly matches the property name on the health check class.  
+<br />
+
+> [_NOTE_]:  For a better understanding of setting an individual health check properties:  
+>> **Props:** Set the value of a property for that health check.  Name directly matches the property name on the health check class.  
 **KeyRefs:** An array of strings to reference another configuration key.  These values will be parsed based on the ':', and the last part will be used to match against the property name on the health check class.  _use these in replacement of the name/value pair under Props._
+
+<br />
+
+> [_TIP_]: You can have multiple instances of the same type of health check.  For example, if you have more than one Key Vaults, create a KeyVaultHealthCheck config to match to each one.
+
+<br />
 
 ### **Health Checks**
 - [DataFactoryHealthCheck](/docs/DataFactoryHealthCheck.md)
-<br />
-<br />
-<br />
-### KeyVaultHealthCheck
-```json
-{
-  "Name": "KeyVault Health Check",
-  "Type": "KeyVaultHealthCheck",
-  "Props": {
-      "KeyVaultName": "name-of-key-vault"
-  }
-}
-```
-**KeyVaultHealthCheck** checks the ability for the app to reach the specified key vault.
-
-### GraphAPIHealthCheck
-```json
-,
-{
-  "Name": "Graph API Health Check",
-  "Type": "GraphApiHealthCheck",
-  "Props": {
-    "GraphScope": "Email.Send",
-    "TenantId": "guid"
-  },
-  "KeyRefs": [
-    "Email:ClientId",
-    "Email:ClientSecret"
-  ]
-}
-```
-**GraphAPIHealthCheck** checks the ability for the app to get an auth token against graph.microsoft.com for the defined scope.  
-_GraphScope_:  Default value is:  ".default"
-
+- [GraphApiHealthCheck](/docs/GraphApiHealthCheck.md)
+- [KeyVaultHealthCheck](/docs/KeyVaultHealthCheck.md)
