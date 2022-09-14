@@ -2,7 +2,7 @@
 <br />
 <br />
 # DataFactoryHealthCheck
-Health check that reports stats of being able to connect to Azure Data Factory and do a GET against the pipelines endpoint.
+Health check that reports the status of being able to connect to Azure Data Factory and do a GET against the pipelines endpoint.
 
 
 ## **appsettings.json**
