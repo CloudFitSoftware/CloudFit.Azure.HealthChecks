@@ -3,11 +3,12 @@ using System.Text;
 using System.Text.Json;
 using Azure.Core;
 using Azure.Identity;
+using CloudFit.Azure.HealthChecks.Base;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace CloudFit.Azure.HealthChecks;
 
-public class GraphApiHealthCheck : IHealthCheck, IConfigureHealthCheck
+public class GraphApiHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigureHealthCheck
 {
     private readonly IEnumerable<string> PropNames = (new[] { "RestBaseUri", "ClientId", "ClientSecret", "TenantId", "GraphScope" });
 
@@ -75,7 +76,7 @@ public class GraphApiHealthCheck : IHealthCheck, IConfigureHealthCheck
         }
         catch (Exception e)
         {
-            return HealthCheckResult.Unhealthy($"Error in getting graph api token.\n tenant: {this.TenantId}\n client: {this.ClientId}\n scope: {this.GraphScope}", e);
+            return HealthCheckResult.Unhealthy($"Error in getting graph api token.\n tenant: {this.TenantId}\n client: {this.ClientId}\n scope: {this.GraphScope}\n (error: {e.Message})", e);
         }
 
         return HealthCheckResult.Healthy($"Successfully obtained a token for: \n tenant: {this.TenantId}\n client: {this.ClientId}\n scope: {this.GraphScope}");

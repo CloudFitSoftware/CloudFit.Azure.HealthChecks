@@ -65,10 +65,15 @@ For each health check desired, use the below to add to the HealthCheckConfigs co
 HealthCheckConfig is unique by name.  When multiple of the same check defined in configuration, remember to give them different names.  
 
 _[TIP]_:  For a better understanding of setting an individual health check properties:  
-**Props:** Set the value of a property for that health check.  Name directly matches the property name on the health check class.  
-**KeyRefs:** An array of strings to reference another configuration key.  These values will be parsed based on the ':', and the last part will be used to match against the property name on the health check class.
+> **Props:** Set the value of a property for that health check.  Name directly matches the property name on the health check class.  
+**KeyRefs:** An array of strings to reference another configuration key.  These values will be parsed based on the ':', and the last part will be used to match against the property name on the health check class.  _use these in replacement of the name/value pair under Props._
 
-### KeyVaultCheck
+### **Health Checks**
+- [DataFactoryHealthCheck](/docs/DataFactoryHealthCheck.md)
+<br />
+<br />
+<br />
+### KeyVaultHealthCheck
 ```json
 {
   "Name": "KeyVault Health Check",
@@ -78,7 +83,7 @@ _[TIP]_:  For a better understanding of setting an individual health check prope
   }
 }
 ```
-**KeyVaultCheck** checks the ability for the app to reach the specified key vault.
+**KeyVaultHealthCheck** checks the ability for the app to reach the specified key vault.
 
 ### GraphAPIHealthCheck
 ```json
@@ -98,3 +103,4 @@ _[TIP]_:  For a better understanding of setting an individual health check prope
 ```
 **GraphAPIHealthCheck** checks the ability for the app to get an auth token against graph.microsoft.com for the defined scope.  
 _GraphScope_:  Default value is:  ".default"
+

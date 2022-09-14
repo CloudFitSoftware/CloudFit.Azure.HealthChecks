@@ -32,7 +32,7 @@ public class HealthCheckSettings
         return hcSet;
     }
 
-    public string Path { get; set; }
+    public string? Path { get; set; }
 
     public IEnumerable<string>? IncludeDbContext { get; set; }
 

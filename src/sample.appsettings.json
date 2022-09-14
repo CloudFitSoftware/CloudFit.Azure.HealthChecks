@@ -21,6 +21,17 @@
           "Email:TenantId",
           "Email:ClientSecret"
         ]
+      },
+      {
+        "Name": "ADF Service Check",
+        "Type": "DataFactoryHealthCheck",
+        "Props": {
+          "FactoryName": "NameOfDataFactory"
+        },
+        "KeyRefs": [
+          "DataFactory:SubscriptionId",
+          "DataFactory:ResourceGroupName"
+        ]
       }
     ]
   }

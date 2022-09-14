@@ -1,6 +1,8 @@
+using CloudFit.Azure.HealthChecks.Base;
 using CloudFit.Azure.HealthChecks.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Identity.Web;
 
 namespace CloudFit.Azure.HealthChecks.DI;
 
@@ -17,21 +19,11 @@ public static class InjectHealthChecksExtensions
 
         // pull individual services out of the collection
         var sp = services.BuildServiceProvider();
-        var configuration = sp.GetService<IConfiguration>();
 
-        if (configuration != null)
-        {
-            // parse configuration
-            var healthCheckSettings = HealthCheckSettings.GetSettings(configuration);
+        sp.ProcessIConfiguration(services, healthCheckBuilder);
 
-            // If individual health checks defined
-            if (healthCheckSettings != null)
-            {
-                healthCheckBuilder.AddHealthChecksFromConfig(healthCheckSettings);
+        sp.ProcessITokenAcquisition();
 
-                healthCheckBuilder.AddDbContextHealthChecks(services, healthCheckSettings);
-            }
-        }
     }
 
     private static void AddHealthChecksFromConfig(this IHealthChecksBuilder builder, HealthCheckSettings settings)
@@ -73,6 +65,35 @@ public static class InjectHealthChecksExtensions
                     }
                 }
             }
+        }
+    }
+
+    private static void ProcessIConfiguration(this ServiceProvider serviceProvider, IServiceCollection services, IHealthChecksBuilder builder)
+    {
+        var configuration = serviceProvider.GetService<IConfiguration>();
+
+        if (configuration != null)
+        {
+            // parse configuration
+            var healthCheckSettings = HealthCheckSettings.GetSettings(configuration);
+
+            // If individual health checks defined
+            if (healthCheckSettings != null)
+            {
+                builder.AddHealthChecksFromConfig(healthCheckSettings);
+
+                builder.AddDbContextHealthChecks(services, healthCheckSettings);
+            }
+        }
+    }
+
+    private static void ProcessITokenAcquisition(this ServiceProvider serviceProvider)
+    {
+        var tokenAcquisition = serviceProvider.GetService<ITokenAcquisition>();
+
+        if (tokenAcquisition != null)
+        {
+            RestApiHealthCheckBase.TokenAcquisition = tokenAcquisition;
         }
     }
 }

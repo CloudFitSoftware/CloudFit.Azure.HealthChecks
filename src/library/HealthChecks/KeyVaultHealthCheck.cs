@@ -26,7 +26,7 @@ public class KeyVaultHealthCheck : IHealthCheck, IConfigureHealthCheck
         }
         catch (Exception e)
         {
-            return Task.FromResult(HealthCheckResult.Unhealthy($"Error in creataing Key Vault client.  (KeyVaultName: {this.KeyVaultName})", e));
+            return Task.FromResult(HealthCheckResult.Unhealthy($"Error in creataing Key Vault client.  (KeyVaultName: {this.KeyVaultName})\n(error: {e.Message})", e));
         }
 
         return Task.FromResult(HealthCheckResult.Healthy("Successfully connected to key vault."));
