@@ -1,4 +1,3 @@
-using System.Reflection;
 using CloudFit.Azure.HealthChecks.Base;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -31,7 +30,7 @@ public class DataFactoryHealthCheck : RestApiHealthCheckBase, IHealthCheck, ICon
         {
             try
             {
-                var token = await TokenAcquisition.GetAccessTokenForAppAsync($"{this.RestBaseUri}{this.Props[_tokenScopeKey]}", authenticationScheme: JwtBearerDefaults.AuthenticationScheme);
+                var token = await this.GetTokenAsync($"{this.RestBaseUri}{this.Props[_tokenScopeKey]}");
 
                 if (!string.IsNullOrEmpty(token))
                 {
