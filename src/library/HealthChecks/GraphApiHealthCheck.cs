@@ -1,12 +1,5 @@
-using System.Net.Http.Headers;
-using System.Text;
-using System.Text.Json;
-using Azure.Core;
-using Azure.Identity;
 using CloudFit.Azure.HealthChecks.Base;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Identity.Client;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace CloudFit.Azure.HealthChecks;
 
