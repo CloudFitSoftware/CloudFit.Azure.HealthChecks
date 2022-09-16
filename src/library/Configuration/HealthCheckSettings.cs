@@ -17,14 +17,17 @@ public class HealthCheckSettings
 
         foreach (var hcCfg in hcSet.HealthCheckConfigs)
         {
-            if ((hcCfg.KeyRefs != null) && (hcCfg.KeyRefs.Count > 0))
+            if(hcCfg.Props != null && hcCfg.Props.Count > 0)
             {
-                if (hcCfg.Props == null) { hcCfg.Props = new Dictionary<string, object>(); }
-
-                foreach (var key in hcCfg.KeyRefs)
+                foreach(var key in hcCfg.Props.Keys)
                 {
-                    var cfgVal = configuration[key];
-                    hcCfg.Props.Add((key.Split(':').Last()), cfgVal);
+                    var value = hcCfg.Props[key];
+                    if((value != null) && ((string)value).StartsWith("::"))
+                    {
+                        var altCfgKey = ((string)value).TrimStart(':');
+                        var altCfgValue = configuration[altCfgKey];
+                        hcCfg.Props[key] = altCfgValue;
+                    }
                 }
             }
         }
