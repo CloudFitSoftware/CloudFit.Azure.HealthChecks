@@ -14,24 +14,20 @@
         "Name": "Graph API Health Check",
         "Type": "GraphApiHealthCheck",
         "Props": {
-          "GraphScope": "Email.Send"
-        },
-        "KeyRefs": [
-          "Email:ClientId",
-          "Email:TenantId",
-          "Email:ClientSecret"
-        ]
+          "GraphScope": "Email.Send",
+          "ClientId": "IDofClient",
+          "ClientSecret": "ClientSecret",
+          "TenantId": "IDofTenant"
+        }
       },
       {
         "Name": "ADF Service Check",
         "Type": "DataFactoryHealthCheck",
         "Props": {
-          "FactoryName": "NameOfDataFactory"
-        },
-        "KeyRefs": [
-          "DataFactory:SubscriptionId",
-          "DataFactory:ResourceGroupName"
-        ]
+          "FactoryName": "NameOfDataFactory",
+          "ResourceGroupName": "NameOfResourceGroup",
+          "SubscriptionId": "IDofSubscription"
+        }
       }
     ]
   }

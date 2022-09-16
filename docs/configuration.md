@@ -43,12 +43,9 @@ This is the required root configuration.
             "Type": "ExampleConfig",
             "Props": {
               "ExampleProp1": "ExamplePropValue",
-              "ExampleProp2": "ExamplePropValue"
-            },
-            "KeyRefs": [
-              "Existing:Config:Key",
-              "Existing:Config:Key"
-            ]
+              "ExampleProp2": "ExamplePropValue",
+              "ExampleProp3": "::PathToExisting:ConfigKey"
+            }
           }
         ]
     }
@@ -66,9 +63,13 @@ For each health check desired, use the below to add to the HealthCheckConfigs co
 
 <br />
 
-> [_NOTE_]:  For a better understanding of setting an individual health check properties:  
->> **Props:** Set the value of a property for that health check.  Name directly matches the property name on the health check class.  
-**KeyRefs:** An array of strings to reference another configuration key.  These values will be parsed based on the ':', and the last part will be used to match against the property name on the health check class.  _use these in replacement of the name/value pair under Props._
+> [_NOTE_]:  To reference the value of another configuration key (in order to prevent duplication), use the key's full name, pre-pended with a double colon (::).
+```json
+"Props": {
+  "ExampleProp1": "A value to used by this property",
+  "ExampleProp2": "::PathToExisting:ConfigKey:WhoseValue:WillBe:UsedHere"
+}
+```
 
 <br />
 
