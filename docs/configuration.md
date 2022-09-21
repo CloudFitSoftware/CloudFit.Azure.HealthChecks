@@ -81,3 +81,4 @@ For each health check desired, use the below to add to the HealthCheckConfigs co
 - [DataFactoryHealthCheck](/docs/DataFactoryHealthCheck.md)
 - [GraphApiHealthCheck](/docs/GraphApiHealthCheck.md)
 - [KeyVaultHealthCheck](/docs/KeyVaultHealthCheck.md)
+- [StorageHealthCheck](/docs/StorageHealthCheck.md)
