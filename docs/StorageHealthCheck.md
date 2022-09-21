@@ -11,7 +11,7 @@ Health check that reports the status of being able to connect to a specific Azur
   "Name": "Azure Storage Check",
   "Type": "StorageHealthCheck",
   "Props": {
-    "AccountName": "NameOfDataFactory",
+    "AccountName": "NameOfStorageAccount",
     "StorageType": "SpecificStorageType"
   }
 }
