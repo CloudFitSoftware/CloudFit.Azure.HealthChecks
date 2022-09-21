@@ -28,6 +28,14 @@
           "ResourceGroupName": "NameOfResourceGroup",
           "SubscriptionId": "IDofSubscription"
         }
+      },
+      {
+        "Name": "Blob Storage Account Check",
+        "Type": "StorageHealthCheck",
+        "Props": {
+          "AccountName": "NameOfDataFactory",
+          "StorageType": "Blob"
+        }
       }
     ]
   }
