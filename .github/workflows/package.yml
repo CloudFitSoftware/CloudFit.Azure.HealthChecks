@@ -46,12 +46,12 @@ jobs:
     # 5) Build a project or solution and all of its dependencies.
     - name: Build
       working-directory: ./src
-      run: dotnet build --configuration Release --no-restore -p:VersionPrefix="$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1)" --version-suffix "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 2)"
+      run: dotnet build --configuration Release --no-restore -p:Version="$("${{ env.RELEASE_VERSION }}")"
 
     # 6) Nuget packaging
     - name: Pack
       working-directory: ./src
-      run: dotnet pack --configuration Release -p:VersionPrefix="$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 1)" --version-suffix "$("${{ env.RELEASE_VERSION }}" | cut -d '-' -f 2)" --no-build --output .
+      run: dotnet pack --configuration Release -p:Version="$("${{ env.RELEASE_VERSION }}")" --no-build --output .
 
     # 7) Upload package back to github
     - name: Push
