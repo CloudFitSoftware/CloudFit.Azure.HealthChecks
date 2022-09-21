@@ -53,7 +53,7 @@ public abstract class RestApiHealthCheckBase
     }
 
     // Get a token for use in authentication of rest api calls
-    internal async Task<string> GetTokenAsync(string scope)
+    internal async Task<string> GetTokenAsync(string scope, string authScheme = JwtBearerDefaults.AuthenticationScheme)
     {
         var token = string.Empty;
 
@@ -63,7 +63,7 @@ public abstract class RestApiHealthCheckBase
         }
         else if (TokenAcquisition != null)
         {
-            token = await TokenAcquisition.GetAccessTokenForAppAsync(scope, authenticationScheme: JwtBearerDefaults.AuthenticationScheme);
+            token = await TokenAcquisition.GetAccessTokenForAppAsync(scope, authenticationScheme: authScheme);
         }
 
         return token;
