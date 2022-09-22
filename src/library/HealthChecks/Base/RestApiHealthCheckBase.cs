@@ -1,18 +1,22 @@
+using Azure.Core;
+using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Identity.Client;
-using Microsoft.Identity.Web;
 
 namespace CloudFit.Azure.HealthChecks.Base;
 
 public abstract class RestApiHealthCheckBase
 {
-    public static ITokenAcquisition? TokenAcquisition { get; set; }
+    internal static TokenCredential TokenProvider = new DefaultAzureCredential();
 
     internal protected IConfidentialClientApplication? ConfidentialClientApplication { get; set; }
 
     internal protected IDictionary<string, string> Props { get; set; }
 
     internal protected string RestBaseUri { get; set; }
+
+    internal protected string AccessTokenString { get; set; }
+    internal protected DateTimeOffset AccessTokenExpiration { get; set; }
 
     // internal strings representing keys in the Props dictionary.
     internal protected static string _clientIdKey = "ClientId";
@@ -27,7 +31,9 @@ public abstract class RestApiHealthCheckBase
         this.Props = new Dictionary<string, string>()
         {
             { _tokenScopeKey, _defaultTokenScope }
-        };
+        };      
+
+        this.AccessTokenString = string.Empty;  
     }
 
     // Using reflection to add the value of a property to the ConfidentialClientApplicationOptions object
@@ -61,9 +67,16 @@ public abstract class RestApiHealthCheckBase
         {
             token = (await this.ConfidentialClientApplication.AcquireTokenForClient(new [] { scope }).ExecuteAsync()).AccessToken;
         }
-        else if (TokenAcquisition != null)
+        else if (TokenProvider != null)
         {
-            token = await TokenAcquisition.GetAccessTokenForAppAsync(scope, authenticationScheme: authScheme);
+            if((string.IsNullOrEmpty(AccessTokenString)) || (AccessTokenExpiration < DateTime.Now))
+            {
+                var accessToken = await TokenProvider.GetTokenAsync(new TokenRequestContext(scopes: new [] { scope }) {}, new CancellationToken());
+                AccessTokenExpiration = accessToken.ExpiresOn;
+                AccessTokenString = accessToken.Token;
+            }
+
+            token = AccessTokenString;
         }
 
         return token;

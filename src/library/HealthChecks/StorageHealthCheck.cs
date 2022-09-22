@@ -42,7 +42,7 @@ public class StorageHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigu
                 {
                     using (var client = new HttpClient())
                     {
-                        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
                         client.DefaultRequestHeaders.Add("x-ms-version", "2021-08-06");
                         client.DefaultRequestHeaders.Add("x-ms-date", $"{DateTime.UtcNow.ToString("ddd, dd MMM yyyy HH:mm:ss")} GMT");
 

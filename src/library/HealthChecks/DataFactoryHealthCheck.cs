@@ -26,37 +26,30 @@ public class DataFactoryHealthCheck : RestApiHealthCheckBase, IHealthCheck, ICon
 
     public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
-        if (TokenAcquisition != null)
+        try
         {
-            try
+            var token = await this.GetTokenAsync($"{this.RestBaseUri}{this.Props[_tokenScopeKey]}");
+
+            if (!string.IsNullOrEmpty(token))
             {
-                var token = await this.GetTokenAsync($"{this.RestBaseUri}{this.Props[_tokenScopeKey]}");
-
-                if (!string.IsNullOrEmpty(token))
+                using (var client = new HttpClient())
                 {
-                    using (var client = new HttpClient())
-                    {
-                        client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
+                    client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
 
-                        var response = await client.GetAsync($"{this.RestBaseUri}subscriptions/{this.Props[_subIdKey]}/resourceGroups/{this.Props[_rgNameKey]}/providers/Microsoft.DataFactory/factories/{this.Props[_factNameKey]}/pipelines?{_apiVersion}");
-                        var content = response.Content.ReadAsStringAsync();
-                        if (response.IsSuccessStatusCode)
-                        {
-                            return HealthCheckResult.Healthy($"Successfully validated DataFactory service.");
-                        }
-                        else
-                        {
-                            return HealthCheckResult.Unhealthy($"Failed to vaildate DataFactory service.  ({content})");
-                        }
+                    var response = await client.GetAsync($"{this.RestBaseUri}subscriptions/{this.Props[_subIdKey]}/resourceGroups/{this.Props[_rgNameKey]}/providers/Microsoft.DataFactory/factories/{this.Props[_factNameKey]}/pipelines?{_apiVersion}");
+                    var content = response.Content.ReadAsStringAsync();
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return HealthCheckResult.Unhealthy($"Failed to vaildate DataFactory service.  ({content})");
                     }
                 }
             }
-            catch (Exception e)
-            {
-                return HealthCheckResult.Unhealthy($"Failed during health check.  {e.Message}", e);
-            }
+        }
+        catch (Exception e)
+        {
+            return HealthCheckResult.Unhealthy($"Failed during health check.  {e.Message}", e);
         }
 
-        return HealthCheckResult.Unhealthy("TokenAcquisition is null.");
+        return HealthCheckResult.Healthy($"Successfully validated DataFactory service.");
     }
 }
