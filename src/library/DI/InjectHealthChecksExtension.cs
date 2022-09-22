@@ -1,8 +1,6 @@
-using CloudFit.Azure.HealthChecks.Base;
 using CloudFit.Azure.HealthChecks.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Identity.Web;
 
 namespace CloudFit.Azure.HealthChecks.DI;
 
@@ -21,8 +19,6 @@ public static class InjectHealthChecksExtensions
         var sp = services.BuildServiceProvider();
 
         sp.ProcessIConfiguration(services, healthCheckBuilder);
-
-        sp.ProcessITokenAcquisition();
 
     }
 
@@ -84,16 +80,6 @@ public static class InjectHealthChecksExtensions
 
                 builder.AddDbContextHealthChecks(services, healthCheckSettings);
             }
-        }
-    }
-
-    private static void ProcessITokenAcquisition(this ServiceProvider serviceProvider)
-    {
-        var tokenAcquisition = serviceProvider.GetService<ITokenAcquisition>();
-
-        if (tokenAcquisition != null)
-        {
-            RestApiHealthCheckBase.TokenAcquisition = tokenAcquisition;
         }
     }
 }
