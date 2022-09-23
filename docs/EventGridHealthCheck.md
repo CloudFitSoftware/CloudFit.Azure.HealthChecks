@@ -1,19 +1,19 @@
 [<-- configuration](/docs/configuration.md)
 <br />
 <br />
-# DataFactoryHealthCheck
-Health check that reports the status of being able to connect to Azure Data Factory and do a GET against the pipelines endpoint.
+# EventGridHealthCheck
+Health check that reports the status of connecting to the Event Grid Topic Endpoint.
 
 
 ## **appsettings.json**
 ```json
 {
-  "Name": "ADF Service Check",
-  "Type": "DataFactoryHealthCheck",
+  "Name": "Event Grid Endpoint Check",
+  "Type": "EventGridHealthCheck",
   "Props": {
-    "FactoryName": "NameOfDataFactory",
-    "ResourceGroupName": "NameOfResourceGroup",
-    "SubscriptionId": "SubscriptionGuid"
+    "TopicName": "NameOfTopic",
+    "SubscriptionId": "IdOfSubscription",
+    "ResourceGroupName": "NameOfResourceGroup"
   }
 }
 ```
@@ -25,7 +25,7 @@ All three properties are needed to perform a successful health status check.
 _**Healthy**_  
 This status is achieved when:
 - a token is successfully obtained for "https://management.azure.com/.default"
-- a _GET_ is successfully executed for pulling the list of pipelines base on health check properties.
+- a _GET_ is successfully executed for retrieving the properties of the Event Grid Topic Endpoint.
 
 _**Unhealth**_  
 This status is reported in the following scenarios

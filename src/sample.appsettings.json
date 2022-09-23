@@ -36,6 +36,15 @@
           "AccountName": "NameOfDataFactory",
           "StorageType": "Blob"
         }
+      },
+      {
+        "Name": "Event Grid Endpoint Check",
+        "Type": "EventGridHealthCheck",
+        "Props": {
+          "TopicName": "NameOfTopic",
+          "SubscriptionId": "IdOfSubscription",
+          "ResourceGroupName": "NameOfResourceGroup"
+        }
       }
     ]
   }
