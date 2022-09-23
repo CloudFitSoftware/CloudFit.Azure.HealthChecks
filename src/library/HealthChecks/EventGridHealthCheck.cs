@@ -10,7 +10,6 @@ public class EventGridHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfi
     private static string _topicNameKey = "TopicName";
     private static string _subIdKey = "SubscriptionId";
     private static string _rgNameKey = "ResourceGroupName";
-    /*private static string _factNameKey = "FactoryName";*/
 
     // Local variables
     private static string _apiVersion = "api-version=2022-06-15";
@@ -20,7 +19,6 @@ public class EventGridHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfi
         this.Props.Add(_topicNameKey, string.Empty);
         this.Props.Add(_subIdKey, string.Empty);
         this.Props.Add(_rgNameKey, string.Empty);
-        
 
         this.RestBaseUri = "https://management.azure.com/";
     }
