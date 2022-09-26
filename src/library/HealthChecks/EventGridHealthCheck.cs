@@ -4,22 +4,21 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace CloudFit.Azure.HealthChecks;
 
-public class DataFactoryHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigureHealthCheck
+public class EventGridHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigureHealthCheck
 {
     // Property keys
+    private static string _topicNameKey = "TopicName";
     private static string _subIdKey = "SubscriptionId";
     private static string _rgNameKey = "ResourceGroupName";
-    private static string _factNameKey = "FactoryName";
 
     // Local variables
-    private string _apiVersion = "api-version=2018-06-01";
+    private static string _apiVersion = "api-version=2022-06-15";
 
-    public DataFactoryHealthCheck() : base()
+    public EventGridHealthCheck() : base()
     {
+        this.Props.Add(_topicNameKey, string.Empty);
         this.Props.Add(_subIdKey, string.Empty);
         this.Props.Add(_rgNameKey, string.Empty);
-        this.Props.Add(_factNameKey, string.Empty);
-
 
         this.RestBaseUri = "https://management.azure.com/";
     }
@@ -36,11 +35,13 @@ public class DataFactoryHealthCheck : RestApiHealthCheckBase, IHealthCheck, ICon
                 {
                     client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue(JwtBearerDefaults.AuthenticationScheme, token);
 
-                    var response = await client.GetAsync($"{this.RestBaseUri}subscriptions/{this.Props[_subIdKey]}/resourceGroups/{this.Props[_rgNameKey]}/providers/Microsoft.DataFactory/factories/{this.Props[_factNameKey]}/pipelines?{_apiVersion}");
+                    var url = $"{this.RestBaseUri}subscriptions/{this.Props[_subIdKey]}/resourceGroups/{this.Props[_rgNameKey]}/providers/Microsoft.EventGrid/topics/{this.Props[_topicNameKey]}?{_apiVersion}";
+                    var response = await client.GetAsync(url);
                     var content = response.Content.ReadAsStringAsync();
+                    
                     if (!response.IsSuccessStatusCode)
                     {
-                        return HealthCheckResult.Unhealthy($"Failed to vaildate DataFactory service.  ({content})");
+                        return HealthCheckResult.Unhealthy($"Failed to vaildate Event Grid.  ({content.Result})");
                     }
                 }
             }
@@ -54,6 +55,6 @@ public class DataFactoryHealthCheck : RestApiHealthCheckBase, IHealthCheck, ICon
             return HealthCheckResult.Unhealthy($"Failed during health check.  {e.Message}", e);
         }
 
-        return HealthCheckResult.Healthy($"Successfully validated DataFactory service.");
+        return HealthCheckResult.Healthy($"Successfully validated Event Grid.");
     }
 }

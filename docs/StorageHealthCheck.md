@@ -33,5 +33,6 @@ This status is achieved when:
 _**Unhealth**_  
 This status is reported in the following scenarios
 - _Failed to vaildate {StorageType} storage account_.  When a non-successful result occurs for the GET of the storage account properties.
+- _Failed to get token for_.  When an authentication token could not be obtained.
 - _Storage account type is invalid_.  This check is verifying that the _StorageType_ property is a valid value.
 - _Failed during health check_.  Any exception thrown during the process of executing the health check.

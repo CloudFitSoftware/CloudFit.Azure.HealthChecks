@@ -11,7 +11,7 @@ public class StorageHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigu
     private static string _storageTypeKey = "StorageType";
 
     private static string _storageBaseUri = ".core.windows.net/";
-    
+
 
     private enum StorageAccountTypes
     {
@@ -53,6 +53,10 @@ public class StorageHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigu
                             return HealthCheckResult.Unhealthy($"Failed to vaildate [{this.Props[_storageTypeKey]}] storage account.  ({this.Props[_accountNameKey]}).  ({content.Result})");
                         }
                     }
+                }
+                else
+                {
+                    return HealthCheckResult.Unhealthy($"Failed to get token for ({this.RestBaseUri})");
                 }
             }
             else
