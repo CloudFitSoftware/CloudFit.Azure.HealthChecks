@@ -3,7 +3,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace CloudFit.Azure.HealthChecks;
 
-public class GraphApiHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigureHealthCheck
+public class GraphApiHealthCheck : RestApiHealthCheckBase
 {
     private static string _graphScopeKey = "GraphScope";
 
@@ -20,7 +20,7 @@ public class GraphApiHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfig
         this.Props.Add(_useClientTokenKey, "true");
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    public override async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         try
         {

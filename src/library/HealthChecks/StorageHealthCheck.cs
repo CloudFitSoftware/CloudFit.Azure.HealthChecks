@@ -1,10 +1,12 @@
 using CloudFit.Azure.HealthChecks.Base;
+using CloudFit.Azure.HealthChecks.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace CloudFit.Azure.HealthChecks;
 
-public class StorageHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigureHealthCheck
+public class StorageHealthCheck : RestApiHealthCheckBase
 {
     // Property keys
     private static string _accountNameKey = "AccountName";
@@ -29,7 +31,7 @@ public class StorageHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigu
         this.Props.Add(_storageTypeKey, string.Empty);
     }
 
-    public async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    public override async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -73,9 +75,9 @@ public class StorageHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigu
 
     }
 
-    public override void SetHealthCheckProperties(IDictionary<string, object>? props)
+    public override IHealthChecksBuilder AddHealthCheck(IHealthChecksBuilder builder, HealthCheckConfig config)
     {
-        base.SetHealthCheckProperties(props);
+        base.AddHealthCheck(builder, config);
 
         // reset base url on inputted properties of Account Name and Storage Account Type
         if (this.Props.ContainsKey(_accountNameKey) && this.Props.ContainsKey(_storageTypeKey))
@@ -86,5 +88,7 @@ public class StorageHealthCheck : RestApiHealthCheckBase, IHealthCheck, IConfigu
         {
             this.RestBaseUri = string.Empty;
         }
+
+        return builder;
     }
 }

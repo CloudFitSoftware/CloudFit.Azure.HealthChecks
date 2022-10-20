@@ -1,52 +1,69 @@
+using Microsoft.Extensions.DependencyInjection;
+using CloudFit.Azure.HealthChecks.Configuration;
+using CloudFit.Azure.HealthChecks.Attributes;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Azure.Security.KeyVault.Secrets;
-using Azure.Identity;
+using CloudFit.Azure.HealthChecks.Base;
 
 namespace CloudFit.Azure.HealthChecks;
 
-public class KeyVaultHealthCheck : IHealthCheck, IConfigureHealthCheck
+[NugetPackageAttribute("AspNetCore.HealthChecks.AzureKeyVault")]
+public class KeyVaultHealthCheck : ManagementHealthCheckBase
 {
-    private readonly IEnumerable<string> PropNames = (new[] { "KeyVaultName" });
+    // properties that are a part of configuration
+    private const string keyVaultNameKey = "KeyVaultName";
+    private const string keyVaultUriKey = "KeyVaultUri";
 
-    private string? KeyVaultName { get; set; }
+    private const string secretNamesKey = "SecretNames";
+    private const string keyNamesKey = "KeyNames";
+    private const string certNamesKey = "CertificateNames";
 
-    public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    // variables specific to Key Vault
+    private const string _apiVersion = "api-version=2021-10-01";
+    private const string _provider = "Microsoft.KeyVault";
+    private const string _providerGroup = "vaults";
+
+    public KeyVaultHealthCheck()
     {
-        try
-        {
-            var kvUri = $"https://{this.KeyVaultName}.vault.azure.net";
-            var keyVaultClient = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+        this.Props.Add(keyVaultNameKey, string.Empty);
+        this.Props.Add(keyVaultUriKey, string.Empty);
 
-            if (keyVaultClient == null)
-            {
-                return Task.FromResult(HealthCheckResult.Unhealthy($"Key Vault client not created.  (KeyVaultName: {this.KeyVaultName})"));
-            }
-
-            keyVaultClient.GetPropertiesOfSecrets();
-        }
-        catch (Exception e)
-        {
-            return Task.FromResult(HealthCheckResult.Unhealthy($"Error in creataing Key Vault client.  (KeyVaultName: {this.KeyVaultName})\n(error: {e.Message})", e));
-        }
-
-        return Task.FromResult(HealthCheckResult.Healthy("Successfully connected to key vault."));
+        this.ItemNameKey = keyVaultNameKey;
+        this.ApiVersion = _apiVersion;
+        this.Provider = _provider;
+        this.ProviderGroup = _providerGroup;
     }
 
-    public void SetHealthCheckProperties(IDictionary<string, object>? props)
+    public override async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
     {
-        if (props != null)
+        if (string.IsNullOrEmpty(this.Props[keyVaultNameKey]) && string.IsNullOrEmpty(this.Props[keyVaultUriKey]))
         {
-            foreach (var name in this.PropNames)
+            // Reporting missing, required configuration properties
+            return HealthCheckResult.Degraded($"Configuration for '{context.Registration.Name}' requires either a ({keyVaultNameKey}) or ({keyVaultUriKey}) in Props.");
+        }
+
+        // use the base class for checking accessibility of the key vault.
+        return await base.CheckHealthAsync(context, cancellationToken);
+    }
+
+    public override IHealthChecksBuilder AddHealthCheck(IHealthChecksBuilder builder, HealthCheckConfig config)
+    {
+        // use the associated nuget package when desired to check secrets, keys, and certificates
+        if (config.Props != null)
+        {
+            if (config.Props.ContainsKey(secretNamesKey) || config.Props.ContainsKey(keyNamesKey) || config.Props.ContainsKey(certNamesKey))
             {
-                switch (name)
+                if (config.Props.ContainsKey(keyVaultNameKey))
                 {
-                    case "KeyVaultName":
-                        {
-                            this.KeyVaultName = (props[name] as string);
-                            break;
-                        }
+                    return KeyVaultExtensionHealthCheck.AddHealthCheck(builder, (new Uri($"https://{config.Props[keyVaultNameKey]}.vault.azure.net")), config.Props, config.Name ?? "KeyVault Health Check Name Missing");
+                }
+                else if (config.Props.ContainsKey(keyVaultUriKey))
+                {
+                    return KeyVaultExtensionHealthCheck.AddHealthCheck(builder, (new Uri($"{config.Props[keyVaultUriKey]}")), config.Props, config.Name ?? "KeyVault Health Check Name Missing");
                 }
             }
         }
+
+        // use this class for validating reachability of the key vault.
+        return base.AddHealthCheck(builder, config);
     }
 }
