@@ -33,6 +33,8 @@ This is the required root configuration.
 {
     "HealthCheckSettings": {
         "Path": "/api/health",
+        "ResourceGroupName": "NameOfResourceGroup",
+        "SubscriptionId": "SubscriptionGuid",
         "IncludeDbContext": [
           "MyCustomDBContextClassName1",
           "MyCustomDBContextClassName2"
@@ -52,6 +54,9 @@ This is the required root configuration.
 }
 ```
 **Path:** This is the relative url to direct health data.  Default show in example above.  
+**ResourceGroupName** _and_ **SubscriptionId:** (_optional_) These two properties represent the Azure target location of resources (the id/guid of the subscription and the name of the resource group).  
+  * If either one exists at the root, it will be cascaded down into the individual HealthCheckConfigs.Props collections that _DO NOT_ have the property(-ies).  
+
 **IncludeDbContext:** This is a collection of strings to identify the _Microsoft.EntityFrameworkCore.DbContext_ to wrap in health checks.  
   * Leaving this as an empty array includes all DbContexts add to the _IServiceCollection_.
   * Removing this from configuration will exclude all DbContexts from health checks via this process.

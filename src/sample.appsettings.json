@@ -1,13 +1,20 @@
 {
   "HealthCheckSettings": {
     "Path": "/api/health",
-    "IncludeDbContext": [],
+    "IncludeDbContext": [ "MyDBContextName1", "MyDBContextName2"],
+    "ResourceGroupName": "NameOfResourceGroup",
+    "SubscriptionId": "IDofSubscription", 
     "HealthCheckConfigs": [
       {
         "Name": "KeyVault Health Check",
         "Type": "KeyVaultHealthCheck",
         "Props": {
-          "KeyVaultName": "OneTwoThree"
+          "KeyVaultName": "OneTwoThree",
+          "SubscriptionId": "IdOfSubscription",
+          "ResourceGroupName": "NameOfResourceGroup",
+          "SecretNames": "SecretToCheck1;SecretToCheck2",
+          "KeyNames": "KeyToCheck1;KeyToCheck2",
+          "CertificateNames": "CertToCheck1;CertToCheck2"
         }
       },
       {
@@ -44,6 +51,13 @@
           "TopicName": "NameOfTopic",
           "SubscriptionId": "IdOfSubscription",
           "ResourceGroupName": "NameOfResourceGroup"
+        }
+      },
+      {
+        "Name": "Redis Health Check",
+        "Type": "RedisHealthCheck",
+        "Props": {
+          "ConnectionString": "RedisConnectionString"
         }
       }
     ]

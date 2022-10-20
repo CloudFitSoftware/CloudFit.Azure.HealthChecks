@@ -22,7 +22,7 @@ public static class HealthCheckResponseWriter
             {
                 Component = x.Key,
                 Status = x.Value.Status.ToString(),
-                Description = x.Value.Description,
+                Description = x.Value.Description + "\n\t  " + (x.Value.Exception?.Message ?? string.Empty),
                 Duration = x.Value.Duration
             }),
             TotalDuration = healthReport.TotalDuration

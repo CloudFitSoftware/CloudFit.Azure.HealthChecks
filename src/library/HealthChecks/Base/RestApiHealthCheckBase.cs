@@ -1,11 +1,14 @@
 using Azure.Core;
 using Azure.Identity;
+using CloudFit.Azure.HealthChecks.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Identity.Client;
 
 namespace CloudFit.Azure.HealthChecks.Base;
 
-public abstract class RestApiHealthCheckBase
+public abstract class RestApiHealthCheckBase : IHealthCheck, IConfigureHealthCheck
 {
     internal static TokenCredential TokenProvider = new DefaultAzureCredential();
 
@@ -19,6 +22,9 @@ public abstract class RestApiHealthCheckBase
     internal protected DateTimeOffset AccessTokenExpiration { get; set; }
 
     // internal strings representing keys in the Props dictionary.
+    internal protected static string _rgNameKey = "ResourceGroupName";
+    internal protected static string _subIdKey = "SubscriptionId";
+
     internal protected static string _clientIdKey = "ClientId";
     internal protected static string _clientSecretKey = "ClientSecret";
     internal protected static string _tenantIdKey = "TenantId";
@@ -31,9 +37,9 @@ public abstract class RestApiHealthCheckBase
         this.Props = new Dictionary<string, string>()
         {
             { _tokenScopeKey, _defaultTokenScope }
-        };      
+        };
 
-        this.AccessTokenString = string.Empty;  
+        this.AccessTokenString = string.Empty;
     }
 
     // Using reflection to add the value of a property to the ConfidentialClientApplicationOptions object
@@ -63,15 +69,15 @@ public abstract class RestApiHealthCheckBase
     {
         var token = string.Empty;
 
-        if(UseClientToken && (this.ConfidentialClientApplication != null))
+        if (UseClientToken && (this.ConfidentialClientApplication != null))
         {
-            token = (await this.ConfidentialClientApplication.AcquireTokenForClient(new [] { scope }).ExecuteAsync()).AccessToken;
+            token = (await this.ConfidentialClientApplication.AcquireTokenForClient(new[] { scope }).ExecuteAsync()).AccessToken;
         }
         else if (TokenProvider != null)
         {
-            if((string.IsNullOrEmpty(AccessTokenString)) || (AccessTokenExpiration < DateTime.Now))
+            if ((string.IsNullOrEmpty(AccessTokenString)) || (AccessTokenExpiration < DateTime.Now))
             {
-                var accessToken = await TokenProvider.GetTokenAsync(new TokenRequestContext(scopes: new [] { scope }) {}, new CancellationToken());
+                var accessToken = await TokenProvider.GetTokenAsync(new TokenRequestContext(scopes: new[] { scope }) { }, new CancellationToken());
                 AccessTokenExpiration = accessToken.ExpiresOn;
                 AccessTokenString = accessToken.Token;
             }
@@ -100,16 +106,23 @@ public abstract class RestApiHealthCheckBase
         }
     }
 
-    public virtual void SetHealthCheckProperties(IDictionary<string, object>? props)
+    public virtual async Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
+    {
+        await Task.Delay(10);
+
+        return HealthCheckResult.Degraded($"Only base class implementation found.");
+    }
+
+    public virtual IHealthChecksBuilder AddHealthCheck(IHealthChecksBuilder builder, HealthCheckConfig config)
     {
         // Update dictionary of properties based on input argument
-        if (props != null)
+        if (config.Props != null)
         {
-            foreach (var key in props.Keys)
+            foreach (var key in config.Props.Keys)
             {
                 if (this.Props.ContainsKey(key))
                 {
-                    this.Props[key] = ((string)props[key]);
+                    this.Props[key] = ((string)config.Props[key]);
                 }
             }
         }
@@ -119,5 +132,7 @@ public abstract class RestApiHealthCheckBase
         {
             this.CreateClientAuthProviderFromProps();
         }
+
+        return builder.AddCheck(config.Name, this);
     }
 }
