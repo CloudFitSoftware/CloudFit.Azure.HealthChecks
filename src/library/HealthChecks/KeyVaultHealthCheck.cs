@@ -22,7 +22,7 @@ public class KeyVaultHealthCheck : ManagementHealthCheckBase
     private const string _provider = "Microsoft.KeyVault";
     private const string _providerGroup = "vaults";
 
-    public KeyVaultHealthCheck()
+    public KeyVaultHealthCheck() : base()
     {
         this.Props.Add(keyVaultNameKey, string.Empty);
         this.Props.Add(keyVaultUriKey, string.Empty);

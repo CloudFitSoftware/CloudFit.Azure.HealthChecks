@@ -3,7 +3,8 @@
     "Path": "/api/health",
     "IncludeDbContext": [ "MyDBContextName1", "MyDBContextName2"],
     "ResourceGroupName": "NameOfResourceGroup",
-    "SubscriptionId": "IDofSubscription", 
+    "SubscriptionId": "IDofSubscription",
+    "AppInsightsInstrumentKey": "",
     "HealthCheckConfigs": [
       {
         "Name": "KeyVault Health Check",

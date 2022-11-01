@@ -12,7 +12,8 @@ public class HealthCheckSettings
 
         if (cfgSec != null)
         {
-            cfgSec.Bind(hcSet, options => {
+            cfgSec.Bind(hcSet, options =>
+            {
                 options.ErrorOnUnknownConfiguration = true;
             });
         }
@@ -107,6 +108,8 @@ public class HealthCheckSettings
     public string? ResourceGroupName { get; set; }
 
     public string? SubscriptionId { get; set; }
+
+    public string? AppInsightsInstrumentKey { get; set; }
 
     public IEnumerable<HealthCheckConfig> HealthCheckConfigs { get; set; }
 }
