@@ -9,6 +9,6 @@ public static class HealthChecksPublisherAppInsights
 {
     public static void AddAppInsightsPublisher(this IHealthChecksBuilder builder, HealthCheckSettings settings)
     {
-        builder.AddApplicationInsightsPublisher(settings.AppInsightsInstrumentKey, true, false);
+        builder.AddApplicationInsightsPublisher(settings.AppInsightsInstrumentationKey, true, false);
     }
 }

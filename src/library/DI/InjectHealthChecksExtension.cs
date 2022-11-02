@@ -84,7 +84,7 @@ public static class InjectHealthChecksExtensions
 
                 try
                 {
-                    if (healthCheckSettings.AppInsightsInstrumentKey != null)
+                    if (healthCheckSettings.AppInsightsInstrumentationKey != null)
                     {
                         HealthChecksPublisherAppInsights.AddAppInsightsPublisher(builder, healthCheckSettings);
                     }

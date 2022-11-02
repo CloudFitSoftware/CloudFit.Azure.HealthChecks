@@ -4,7 +4,7 @@
     "IncludeDbContext": [ "MyDBContextName1", "MyDBContextName2"],
     "ResourceGroupName": "NameOfResourceGroup",
     "SubscriptionId": "IDofSubscription",
-    "AppInsightsInstrumentKey": "",
+    "AppInsightsInstrumentationKey": "",
     "HealthCheckConfigs": [
       {
         "Name": "KeyVault Health Check",

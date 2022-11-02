@@ -109,7 +109,7 @@ public class HealthCheckSettings
 
     public string? SubscriptionId { get; set; }
 
-    public string? AppInsightsInstrumentKey { get; set; }
+    public string? AppInsightsInstrumentationKey { get; set; }
 
     public IEnumerable<HealthCheckConfig> HealthCheckConfigs { get; set; }
 }
