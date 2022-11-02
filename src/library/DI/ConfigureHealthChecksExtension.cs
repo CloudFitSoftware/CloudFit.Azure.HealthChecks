@@ -16,12 +16,12 @@ public static class ConfigureHealthChecksExtension
     /*
     * ConfigureHealthChecks
     */
-    public static void ConfigureHealthChecks(this IApplicationBuilder app)
+    public static IApplicationBuilder ConfigureHealthChecks(this IApplicationBuilder app)
     {
-        app.ConfigureHealthChecks(HealthCheckResponseWriter.ResponseWriter, _defaultPath);
+        return app.ConfigureHealthChecks(HealthCheckResponseWriter.ResponseWriter, _defaultPath);
     }
 
-    public static void ConfigureHealthChecks(this IApplicationBuilder app, IConfiguration configuration)
+    public static IApplicationBuilder ConfigureHealthChecks(this IApplicationBuilder app, IConfiguration configuration)
     {
         // parse configuration
         var healthCheckSettings = HealthCheckSettings.GetSettings(configuration);
@@ -32,14 +32,16 @@ public static class ConfigureHealthChecksExtension
             path = healthCheckSettings.Path;
         }
 
-        app.ConfigureHealthChecks(HealthCheckResponseWriter.ResponseWriter, path);
+        return app.ConfigureHealthChecks(HealthCheckResponseWriter.ResponseWriter, path);
     }
 
-    public static void ConfigureHealthChecks(this IApplicationBuilder app, Func<HttpContext, HealthReport, Task> responseWriter, string relativeUriPath)
+    public static IApplicationBuilder ConfigureHealthChecks(this IApplicationBuilder app, Func<HttpContext, HealthReport, Task> responseWriter, string relativeUriPath)
     {
         app.UseHealthChecks(relativeUriPath, new HealthCheckOptions
         {
             ResponseWriter = HealthCheckResponseWriter.ResponseWriter
         });
+
+        return app;
     }
 }

@@ -19,6 +19,9 @@
     <PackageReference Include="AspNetCore.HealthChecks.AzureKeyVault" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="AspNetCore.HealthChecks.Publisher.ApplicationInsights" Version="6.0.2">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="6.0.4">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

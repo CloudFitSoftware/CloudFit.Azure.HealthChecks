@@ -10,7 +10,7 @@ public static class InjectHealthChecksExtensions
     * InjectHealthChecks
     */
     // Static function for injecting health checks into the application service collection
-    public static void InjectHealthChecks(this IServiceCollection services)
+    public static IHealthChecksBuilder InjectHealthChecks(this IServiceCollection services)
     {
         // create builder
         var healthCheckBuilder = services.AddHealthChecks();
@@ -20,6 +20,7 @@ public static class InjectHealthChecksExtensions
 
         sp.ProcessIConfiguration(services, healthCheckBuilder);
 
+        return healthCheckBuilder;
     }
 
     private static void AddHealthChecksFromConfig(this IHealthChecksBuilder builder, HealthCheckSettings settings)
@@ -76,9 +77,25 @@ public static class InjectHealthChecksExtensions
             // If individual health checks defined
             if (healthCheckSettings != null)
             {
+
                 builder.AddHealthChecksFromConfig(healthCheckSettings);
 
                 builder.AddDbContextHealthChecks(services, healthCheckSettings);
+
+                try
+                {
+                    if (healthCheckSettings.AppInsightsInstrumentKey != null)
+                    {
+                        HealthChecksPublisherAppInsights.AddAppInsightsPublisher(builder, healthCheckSettings);
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    var message = $"Error in adding health checks publisher.\n\nError message: {ex.Message}";
+
+                    // Return a configuration health check to alert to an error in establishing the health check
+                    builder.AddCheck("Add Health Check Publishers", new ConfigurationHealthCheck(message, ex));
+                }
             }
         }
     }
